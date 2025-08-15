@@ -4,22 +4,22 @@ import java.util.Objects;
 
 public class AuthRequest {
 
-    private String email;
+    private String identifier;
     private String password;
 
     public AuthRequest() {
     }
-    public AuthRequest(String email, String password) {
-        this.email = email;
+    public AuthRequest(String identifier, String password) {
+        this.identifier = identifier;
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public String getPassword() {
@@ -33,7 +33,7 @@ public class AuthRequest {
     @Override
     public String toString() {
         return "AuthRequest{" +
-                "email='" + email + '\'' +
+                "identifier='" + identifier + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
@@ -42,11 +42,11 @@ public class AuthRequest {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AuthRequest that)) return false;
-        return Objects.equals(getEmail(), that.getEmail()) && Objects.equals(getPassword(), that.getPassword());
+        return Objects.equals(getIdentifier(), that.getIdentifier()) && Objects.equals(getPassword(), that.getPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEmail(), getPassword());
+        return Objects.hash(getIdentifier(), getPassword());
     }
 }

@@ -30,6 +30,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return repo.existsByEmail(email);
     }
 
+    public Optional<User> findByUsernameOrEmail(String identifier) {
+        if (identifier.contains("@")) {
+            return findByEmail(identifier);
+        } else {
+            return findByUsername(identifier);
+        }
+    }
+    public Optional<User> findByUsername(String username) {
+        return repo.findByName(username);
+    }
+
     public User registerLocalUser(String name, String email, String rawPassword) {
         String hashed = passwordEncoder.encode(rawPassword);
         User u = new User();

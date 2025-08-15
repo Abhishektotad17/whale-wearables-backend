@@ -4,6 +4,8 @@ public class GoogleLoginRequest {
 
     private String token;
 
+    private String code;
+
     public GoogleLoginRequest() {
 
     }
@@ -18,6 +20,14 @@ public class GoogleLoginRequest {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     @Override
