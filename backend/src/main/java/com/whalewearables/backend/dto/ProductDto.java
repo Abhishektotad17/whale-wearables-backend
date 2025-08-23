@@ -1,15 +1,9 @@
-package com.whalewearables.backend.model;
-
-import jakarta.persistence.*;
+package com.whalewearables.backend.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "products")
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProductDto {
     private Long productId;
     private String name;
     private String description;
@@ -19,10 +13,10 @@ public class Product {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Product() {
+    public ProductDto() {
     }
 
-    public Product(Long productId, String name, String description, BigDecimal price, Integer stockQuantity, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ProductDto(Long productId, String name, String description, BigDecimal price, Integer stockQuantity, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.productId = productId;
         this.name = name;
         this.description = description;
@@ -95,19 +89,5 @@ public class Product {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "productId=" + productId +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", stockQuantity=" + stockQuantity +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }

@@ -40,7 +40,8 @@ public class SecurityConfig {
                                 "/api/orders",
                                 "/api/orders/*/token",
                                 "/api/orders/*/status",
-                                "/api/orders/*").permitAll() // Public endpoints
+                                "/api/orders/*",
+                                "/api/products/add-with-image").permitAll() // Public endpoints
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
