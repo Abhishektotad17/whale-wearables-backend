@@ -50,4 +50,19 @@ public class OrderController {
 //        orderService.updateOrderStatus(orderId, status);
 //        return Map.of("message", "Order status updated successfully");
 //    }
+
+    @GetMapping("/orders/{orderId}/verify")
+    public Map<String, Object> verifyOrder(@PathVariable String orderId) {
+        String status = cashFreeService.updateOrderStatusFromGateway(orderId);
+
+        // Fetch updated order from DB
+        Order order = orderService.getOrder(orderId);
+
+        return Map.of(
+                "orderId", orderId,
+                "status", status,
+                "order", order
+        );
+    }
+
 }

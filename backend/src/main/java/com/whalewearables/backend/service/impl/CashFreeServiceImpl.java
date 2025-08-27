@@ -6,6 +6,7 @@ import com.cashfree.pg.Cashfree;
 import com.cashfree.pg.model.CreateOrderRequest;
 import com.cashfree.pg.model.CustomerDetails;
 import com.cashfree.pg.model.OrderEntity;
+import com.cashfree.pg.model.OrderMeta;
 import com.whalewearables.backend.model.Order;
 import com.whalewearables.backend.repository.OrderRepository;
 import com.whalewearables.backend.service.CashFreeService;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.cashfree.pg.Cashfree;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -55,6 +58,11 @@ public class CashFreeServiceImpl implements CashFreeService {
         customerDetails.setCustomerPhone(order.getPhone());
         customerDetails.setCustomerId("cust_" + order.getPhone());
         request.setCustomerDetails(customerDetails);
+
+        // ✅ Add order_meta with return_url
+        OrderMeta orderMeta = new OrderMeta();
+        orderMeta.setReturnUrl("http://localhost:5173/payment-success?order_id={order_id}");
+        request.setOrderMeta(orderMeta);
 
         try {
             ApiResponse<OrderEntity> response = cashfree.PGCreateOrder(request, null, null, null);
