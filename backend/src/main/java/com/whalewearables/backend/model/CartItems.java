@@ -3,6 +3,7 @@ package com.whalewearables.backend.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -10,8 +11,11 @@ import java.time.LocalDateTime;
 @Table(name = "cart_items")
 public class CartItems {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
-    private Long cartId;     // FK → Cart
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
     private Long productId;  // FK → Product
     private Integer quantity;
     private LocalDateTime createdAt;
@@ -20,9 +24,8 @@ public class CartItems {
     public CartItems() {
     }
 
-    public CartItems(Long cartItemId, Long cartId, Long productId, Integer quantity, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public CartItems(Long cartItemId, Long productId, Integer quantity, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.cartItemId = cartItemId;
-        this.cartId = cartId;
         this.productId = productId;
         this.quantity = quantity;
         this.createdAt = createdAt;
@@ -37,12 +40,12 @@ public class CartItems {
         this.cartItemId = cartItemId;
     }
 
-    public Long getCartId() {
-        return cartId;
+    public Cart getCart() {
+        return cart;
     }
 
-    public void setCartId(Long cartId) {
-        this.cartId = cartId;
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     public Long getProductId() {
@@ -81,7 +84,7 @@ public class CartItems {
     public String toString() {
         return "CartItems{" +
                 "cartItemId=" + cartItemId +
-                ", cartId=" + cartId +
+                ", cart=" + cart +
                 ", productId=" + productId +
                 ", quantity=" + quantity +
                 ", createdAt=" + createdAt +

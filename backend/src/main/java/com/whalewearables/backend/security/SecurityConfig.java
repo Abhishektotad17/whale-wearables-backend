@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "/api/orders/*/status",
                                 "/api/orders/*",
                                 "/api/products",
+                                "/api/cart",
                                 "/api/products/add-with-image").permitAll() // Public endpoints
                         .anyRequest().authenticated()
                 )

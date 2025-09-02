@@ -1,26 +1,39 @@
 package com.whalewearables.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "cart")
 public class Cart {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
-    private Long userId;   // FK to your Users table (if you have it)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;   // ✅ mapped to User entity
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItems> items = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public Cart() {
     }
-
-    public Cart(Long cartId, Long userId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    public Cart(Long cartId, User user, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.cartId = cartId;
-        this.userId = userId;
+        this.user = user;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -33,12 +46,20 @@ public class Cart {
         this.cartId = cartId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<CartItems> getItems() {
+        return items;
+    }
+
+    public void setItems(List<CartItems> items) {
+        this.items = items;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -61,7 +82,8 @@ public class Cart {
     public String toString() {
         return "Cart{" +
                 "cartId=" + cartId +
-                ", userId=" + userId +
+                ", user=" + user +
+                ", items=" + items +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
