@@ -13,10 +13,6 @@ public class Payments {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payment_id")
     private Integer paymentId;
-
-    @Column(name = "order_id", nullable = false)
-    private String orderId;
-
     @Column(name = "user_id", nullable = false)
     private Integer userId;
 
@@ -40,13 +36,15 @@ public class Payments {
 
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     public Payments() {
     }
 
-    public Payments(Integer paymentId, String orderId, Integer userId, BigDecimal amount, String currency, String status, String paymentMethod, String transactionId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Payments(Integer paymentId, Integer userId, BigDecimal amount, String currency, String status, String paymentMethod, String transactionId, LocalDateTime createdAt, LocalDateTime updatedAt, Order order) {
         this.paymentId = paymentId;
-        this.orderId = orderId;
         this.userId = userId;
         this.amount = amount;
         this.currency = currency;
@@ -55,6 +53,7 @@ public class Payments {
         this.transactionId = transactionId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.order = order;
     }
 
     // Getters and Setters
@@ -64,14 +63,6 @@ public class Payments {
 
     public void setPaymentId(Integer paymentId) {
         this.paymentId = paymentId;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
     }
 
     public Integer getUserId() {
@@ -128,5 +119,37 @@ public class Payments {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    @Override
+    public String toString() {
+        return "Payments{" +
+                "paymentId=" + paymentId +
+                ", userId=" + userId +
+                ", amount=" + amount +
+                ", currency='" + currency + '\'' +
+                ", status='" + status + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", order=" + order +
+                '}';
     }
 }

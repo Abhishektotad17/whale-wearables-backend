@@ -1,8 +1,6 @@
 package com.whalewearables.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,9 +9,13 @@ import java.time.LocalDateTime;
 @Table(name = "order_items")
 public class OrderItem {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderItemId;
-    private String orderId;   // FK → Payments (order_id comes from Cashfree, varchar)
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
     private Long productId;   // FK → Product
+    private String productName;
     private Integer quantity;
     private BigDecimal price;
     private LocalDateTime createdAt;
@@ -21,14 +23,16 @@ public class OrderItem {
 
     public OrderItem() {
     }
-    public OrderItem(Long orderItemId, String orderId, Long productId, Integer quantity, BigDecimal price, LocalDateTime createdAt, LocalDateTime updatedAt) {
+
+    public OrderItem(Long orderItemId, Long productId, String productName, Integer quantity, BigDecimal price, LocalDateTime createdAt, LocalDateTime updatedAt, Order order) {
         this.orderItemId = orderItemId;
-        this.orderId = orderId;
         this.productId = productId;
+        this.productName = productName;
         this.quantity = quantity;
         this.price = price;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.order = order;
     }
 
     public Long getOrderItemId() {
@@ -37,14 +41,6 @@ public class OrderItem {
 
     public void setOrderItemId(Long orderItemId) {
         this.orderItemId = orderItemId;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
     }
 
     public Long getProductId() {
@@ -87,16 +83,33 @@ public class OrderItem {
         this.updatedAt = updatedAt;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
     @Override
     public String toString() {
         return "OrderItem{" +
                 "orderItemId=" + orderItemId +
-                ", orderId='" + orderId + '\'' +
                 ", productId=" + productId +
+                ", productName='" + productName + '\'' +
                 ", quantity=" + quantity +
                 ", price=" + price +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", order=" + order +
                 '}';
     }
 }

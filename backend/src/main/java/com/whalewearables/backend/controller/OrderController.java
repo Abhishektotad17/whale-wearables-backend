@@ -1,10 +1,13 @@
 package com.whalewearables.backend.controller;
 
 import com.whalewearables.backend.dto.OrderRequest;
+import com.whalewearables.backend.dto.OrderResponse;
 import com.whalewearables.backend.model.Order;
 import com.whalewearables.backend.service.CashFreeService;
 import com.whalewearables.backend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -22,14 +25,16 @@ public class OrderController {
 
     // Step 1: Create order
     @PostMapping("/orders")
-    public Order createOrder(@RequestBody OrderRequest request)
+    public OrderResponse  createOrder(@RequestBody OrderRequest request)
     {
-        return orderService.createOrder(request);
+        Order order = orderService.createOrder(request);
+        return new OrderResponse(order);
     }
 
     // Step 2: Get Cashfree token for the order
     @GetMapping("/orders/{orderId}/token")
     public Map<String, String> getToken(@PathVariable String orderId) {
+        System.out.println("Received orderId: " + orderId);
         String token = cashFreeService.generateToken(orderId);
         return Map.of("cftoken", token);
     }
@@ -52,17 +57,24 @@ public class OrderController {
 //    }
 
     @GetMapping("/orders/{orderId}/verify")
-    public Map<String, Object> verifyOrder(@PathVariable String orderId) {
-        String status = cashFreeService.updateOrderStatusFromGateway(orderId);
+    public  ResponseEntity<?> verifyOrder(@PathVariable String orderId) {
+        try {
+            String status = cashFreeService.updateOrderStatusFromGateway(orderId);
 
-        // Fetch updated order from DB
-        Order order = orderService.getOrder(orderId);
+            Order order = orderService.getOrder(orderId);
 
-        return Map.of(
-                "orderId", orderId,
-                "status", status,
-                "order", order
-        );
+            // Update status in DTO
+            OrderResponse response = new OrderResponse(order);
+            response.setStatus(status != null ? status : "UNKNOWN");
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "orderId", orderId,
+                    "status", "FAILED",
+                    "error", e.getMessage()
+            ));
+        }
     }
 
 }

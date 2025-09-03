@@ -1,16 +1,18 @@
 package com.whalewearables.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
 public class Order {
     @Id
+    @Column(name = "order_id", updatable = false, nullable = false)
     private String orderId;
 
     private BigDecimal amount;
@@ -23,16 +25,32 @@ public class Order {
 
     private LocalDateTime updatedAt;
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private OrderBilling billing;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private OrderShipping shipping;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> items = new ArrayList<>();
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Payments> payments = new ArrayList<>();
+
     public Order() {
     }
 
-    public Order(String orderId, BigDecimal amount, String phone, String status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Order(String orderId, BigDecimal amount, String phone, String status, LocalDateTime createdAt, LocalDateTime updatedAt, OrderBilling billing, OrderShipping shipping, List<OrderItem> items, List<Payments> payments) {
         this.orderId = orderId;
         this.amount = amount;
         this.phone = phone;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.billing = billing;
+        this.shipping = shipping;
+        this.items = items;
+        this.payments = payments;
     }
 
     public String getOrderId() {
@@ -83,6 +101,38 @@ public class Order {
         this.updatedAt = updatedAt;
     }
 
+    public OrderBilling getBilling() {
+        return billing;
+    }
+
+    public void setBilling(OrderBilling billing) {
+        this.billing = billing;
+    }
+
+    public OrderShipping getShipping() {
+        return shipping;
+    }
+
+    public void setShipping(OrderShipping shipping) {
+        this.shipping = shipping;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
+
+    public List<Payments> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payments> payments) {
+        this.payments = payments;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -92,6 +142,10 @@ public class Order {
                 ", status='" + status + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", billing=" + billing +
+                ", shipping=" + shipping +
+                ", items=" + items +
+                ", payments=" + payments +
                 '}';
     }
 }

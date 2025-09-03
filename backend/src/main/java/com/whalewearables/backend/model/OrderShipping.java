@@ -1,8 +1,6 @@
 package com.whalewearables.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -10,8 +8,11 @@ import java.time.LocalDateTime;
 @Table(name = "order_shipping")
 public class OrderShipping {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long shippingId;
-    private String orderId;   // FK → Payments
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
     private String fullName;
     private String addressLine1;
     private String addressLine2;
@@ -26,9 +27,8 @@ public class OrderShipping {
     public OrderShipping() {
     }
 
-    public OrderShipping(Long shippingId, String orderId, String fullName, String addressLine1, String addressLine2, String city, String state, String postalCode, String country, String phoneNumber, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public OrderShipping(Long shippingId, String fullName, String addressLine1, String addressLine2, String city, String state, String postalCode, String country, String phoneNumber, LocalDateTime createdAt, LocalDateTime updatedAt, Order order) {
         this.shippingId = shippingId;
-        this.orderId = orderId;
         this.fullName = fullName;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
@@ -39,6 +39,7 @@ public class OrderShipping {
         this.phoneNumber = phoneNumber;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.order = order;
     }
 
     public Long getShippingId() {
@@ -48,15 +49,6 @@ public class OrderShipping {
     public void setShippingId(Long shippingId) {
         this.shippingId = shippingId;
     }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
     public String getFullName() {
         return fullName;
     }
@@ -137,11 +129,18 @@ public class OrderShipping {
         this.updatedAt = updatedAt;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     @Override
     public String toString() {
         return "OrderShipping{" +
                 "shippingId=" + shippingId +
-                ", orderId='" + orderId + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", addressLine1='" + addressLine1 + '\'' +
                 ", addressLine2='" + addressLine2 + '\'' +
@@ -152,6 +151,7 @@ public class OrderShipping {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", order=" + order +
                 '}';
     }
 }

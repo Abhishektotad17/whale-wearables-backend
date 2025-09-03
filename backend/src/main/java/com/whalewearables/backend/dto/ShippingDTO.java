@@ -1,18 +1,7 @@
-package com.whalewearables.backend.model;
+package com.whalewearables.backend.dto;
 
-import jakarta.persistence.*;
+public class ShippingDTO {
 
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "order_billing")
-public class OrderBilling {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long billingId;
-    @OneToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
     private String fullName;
     private String addressLine1;
     private String addressLine2;
@@ -21,15 +10,10 @@ public class OrderBilling {
     private String postalCode;
     private String country;
     private String phoneNumber;
-    private String email;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
-    public OrderBilling() {
+    public ShippingDTO() {
     }
-
-    public OrderBilling(Long billingId, String fullName, String addressLine1, String addressLine2, String city, String state, String postalCode, String country, String phoneNumber, String email, LocalDateTime createdAt, LocalDateTime updatedAt, Order order) {
-        this.billingId = billingId;
+    public ShippingDTO(String fullName, String addressLine1, String addressLine2, String city, String state, String postalCode, String country, String phoneNumber) {
         this.fullName = fullName;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
@@ -38,19 +22,8 @@ public class OrderBilling {
         this.postalCode = postalCode;
         this.country = country;
         this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.order = order;
     }
 
-    public Long getBillingId() {
-        return billingId;
-    }
-
-    public void setBillingId(Long billingId) {
-        this.billingId = billingId;
-    }
     public String getFullName() {
         return fullName;
     }
@@ -115,43 +88,10 @@ public class OrderBilling {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
     @Override
     public String toString() {
-        return "OrderBilling{" +
-                "billingId=" + billingId +
-                ", fullName='" + fullName + '\'' +
+        return "ShippingDTO{" +
+                "fullName='" + fullName + '\'' +
                 ", addressLine1='" + addressLine1 + '\'' +
                 ", addressLine2='" + addressLine2 + '\'' +
                 ", city='" + city + '\'' +
@@ -159,10 +99,6 @@ public class OrderBilling {
                 ", postalCode='" + postalCode + '\'' +
                 ", country='" + country + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", email='" + email + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", order=" + order +
                 '}';
     }
 }
