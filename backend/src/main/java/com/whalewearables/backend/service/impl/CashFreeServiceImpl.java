@@ -14,8 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.cashfree.pg.Cashfree;
+import com.cashfree.pg.model.PaymentEntity;
+
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -73,51 +76,28 @@ public class CashFreeServiceImpl implements CashFreeService {
     }
 
     @Override
-    public String updateOrderStatusFromGateway(String orderId) {
+    public OrderEntity fetchOrderDetails(String orderId) {
         Cashfree cashfree = initCashfree();
-
         try {
             ApiResponse<OrderEntity> response = cashfree.PGFetchOrder(orderId, null, null, null);
-            String gatewayStatus = response.getData().getOrderStatus();
-
-            if (gatewayStatus == null) {
-                gatewayStatus = "UNKNOWN";
-            }
-
-            String normalizedStatus;
-            switch (gatewayStatus.toUpperCase()) {
-                case "PAID":
-                case "SUCCESS":
-                case "COMPLETED":
-                    normalizedStatus = "PAID";
-                    break;
-                case "FAILED":
-                case "CANCELLED":
-                    normalizedStatus = "FAILED";
-                    break;
-                default:
-                    normalizedStatus = gatewayStatus.toUpperCase();
-                    break;
-            }
-
-            Optional<Order> orderOpt = orderRepository.findById(orderId);
-            if (orderOpt.isPresent()) {
-                Order order = orderOpt.get();
-                if (!normalizedStatus.equals(order.getStatus())) {
-                    order.setStatus(normalizedStatus);
-                    orderRepository.save(order);
-                }
-            }
-
-            return normalizedStatus;
-
+            return response.getData();
         } catch (ApiException e) {
-            throw new RuntimeException("Failed to fetch order status from Cashfree: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch order details: " + e.getMessage(), e);
         }
     }
-
-
-
-
+    @Override
+    public List<PaymentEntity> fetchPayments(String orderId) {
+        Cashfree cashfree = initCashfree();
+        try {
+            ApiResponse<List<PaymentEntity>> response = cashfree.PGOrderFetchPayments(orderId, null, null, null);
+            List<PaymentEntity> payments = response.getData();
+            if (payments == null || payments.isEmpty()) {
+                throw new RuntimeException("No payments found for orderId: " + orderId);
+            }
+            return payments; // A list of PaymentEntity
+        } catch (ApiException e) {
+            throw new RuntimeException("Failed to fetch payments: " + e.getMessage(), e);
+        }
+    }
 }
 

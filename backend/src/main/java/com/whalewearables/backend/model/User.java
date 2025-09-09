@@ -21,6 +21,16 @@ public class User {
     @Column
     private String picture;
 
+    public User() {
+    }
+    public User(Long id, String email, String name, String password, String provider, String picture) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.provider = provider;
+        this.picture = picture;
+    }
     public Long getId() {
         return id;
     }
@@ -68,4 +78,15 @@ public class User {
     public void setPicture(String picture) {
         this.picture = picture;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", provider='" + provider + '\'' +
+                '}';
+    }
+
 }

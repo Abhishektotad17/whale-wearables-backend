@@ -1,5 +1,7 @@
 package com.whalewearables.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -10,11 +12,12 @@ import java.time.LocalDateTime;
 public class Payments {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "payment_id")
-    private Integer paymentId;
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    @Column(name = "payment_id", length = 100) // now stores cf_payment_id
+    private String paymentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false) // ✅ Hibernate will manage this
+    @JsonBackReference
+    private User user;
 
     @Column(name = "amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal amount;
@@ -22,11 +25,12 @@ public class Payments {
     @Column(name = "currency", length = 10)
     private String currency = "INR";
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50, nullable = false)
-    private String status;
-
+    private PaymentStatus status;
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 50)
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
     @Column(name = "transaction_id", length = 255)
     private String transactionId;
@@ -36,16 +40,17 @@ public class Payments {
 
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
-    @ManyToOne
-    @JoinColumn(name = "order_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    @JsonBackReference
     private Order order;
 
     public Payments() {
     }
 
-    public Payments(Integer paymentId, Integer userId, BigDecimal amount, String currency, String status, String paymentMethod, String transactionId, LocalDateTime createdAt, LocalDateTime updatedAt, Order order) {
+    public Payments(String paymentId, User user, BigDecimal amount, String currency, PaymentStatus status, PaymentMethod paymentMethod, String transactionId, LocalDateTime createdAt, LocalDateTime updatedAt, Order order) {
         this.paymentId = paymentId;
-        this.userId = userId;
+        this.user = user;
         this.amount = amount;
         this.currency = currency;
         this.status = status;
@@ -57,22 +62,23 @@ public class Payments {
     }
 
     // Getters and Setters
-    public Integer getPaymentId() {
+    public String getPaymentId() {
         return paymentId;
     }
-
-    public void setPaymentId(Integer paymentId) {
+    public void setPaymentId(String paymentId) {
         this.paymentId = paymentId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    // convenience getter for userId
+    public Long getUserId() {
+        return user != null ? user.getId() : null;
     }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
-
+    public User getUser() {
+        return user;
+    }
     public BigDecimal getAmount() {
         return amount;
     }
@@ -89,19 +95,19 @@ public class Payments {
         this.currency = currency;
     }
 
-    public String getStatus() {
+    public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 
-    public String getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
@@ -140,16 +146,16 @@ public class Payments {
     @Override
     public String toString() {
         return "Payments{" +
-                "paymentId=" + paymentId +
-                ", userId=" + userId +
+                "paymentId='" + paymentId + '\'' +
+                ", userId=" + (user != null ? user.getId() : null) +
                 ", amount=" + amount +
                 ", currency='" + currency + '\'' +
-                ", status='" + status + '\'' +
-                ", paymentMethod='" + paymentMethod + '\'' +
+                ", status=" + status +
+                ", paymentMethod=" + paymentMethod +
                 ", transactionId='" + transactionId + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", order=" + order +
+                ", orderId=" + (order != null ? order.getOrderId() : null) +
                 '}';
     }
 }

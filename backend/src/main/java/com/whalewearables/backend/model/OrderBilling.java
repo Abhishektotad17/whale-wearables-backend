@@ -9,21 +9,47 @@ import java.time.LocalDateTime;
 public class OrderBilling {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "billing_id")
     private Long billingId;
-    @OneToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+
+    @Column(name = "full_name", nullable = false)
     private String fullName;
+
+    @Column(name = "address_line1", nullable = false)
     private String addressLine1;
+
+    @Column(name = "address_line2")
     private String addressLine2;
+
+    @Column(name = "city", nullable = false)
     private String city;
+
+    @Column(name = "state", nullable = false)
     private String state;
+
+    @Column(name = "postal_code", nullable = false)
     private String postalCode;
+
+    @Column(name = "country", nullable = false)
     private String country;
+
+    @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "email")
     private String email;
+
+    // FIXED: Let database handle timestamps
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
+
+    // FIXED: Use @JoinColumn to map to the actual FK column
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id",nullable = false)
+    private Order order;
 
     public OrderBilling() {
     }
@@ -44,6 +70,9 @@ public class OrderBilling {
         this.order = order;
     }
 
+    // Getters and Setters
+
+
     public Long getBillingId() {
         return billingId;
     }
@@ -51,6 +80,7 @@ public class OrderBilling {
     public void setBillingId(Long billingId) {
         this.billingId = billingId;
     }
+
     public String getFullName() {
         return fullName;
     }

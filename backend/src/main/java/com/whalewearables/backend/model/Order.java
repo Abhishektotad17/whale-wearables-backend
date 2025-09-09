@@ -1,5 +1,6 @@
 package com.whalewearables.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -19,40 +20,55 @@ public class Order {
 
     private String phone;
 
+    private String email;
+
     private String status;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY) // many orders can belong to one user
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private OrderBilling billing;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private OrderShipping shipping;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Payments> payments = new ArrayList<>();
 
     public Order() {
     }
 
-    public Order(String orderId, BigDecimal amount, String phone, String status, LocalDateTime createdAt, LocalDateTime updatedAt, OrderBilling billing, OrderShipping shipping, List<OrderItem> items, List<Payments> payments) {
+    public Order(String orderId, BigDecimal amount, String phone, String email, String status, LocalDateTime createdAt, LocalDateTime updatedAt, User user, OrderBilling billing, OrderShipping shipping, List<OrderItem> items, List<Payments> payments) {
         this.orderId = orderId;
         this.amount = amount;
         this.phone = phone;
+        this.email = email;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.user = user;
         this.billing = billing;
         this.shipping = shipping;
         this.items = items;
         this.payments = payments;
     }
 
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
     public String getOrderId() {
         return orderId;
     }
@@ -133,19 +149,27 @@ public class Order {
         this.payments = payments;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
                 "orderId='" + orderId + '\'' +
                 ", amount=" + amount +
                 ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
                 ", status='" + status + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", billing=" + billing +
-                ", shipping=" + shipping +
-                ", items=" + items +
-                ", payments=" + payments +
+                // Avoid recursion by not calling full user.toString()
+                ", userId=" + (user != null ? user.getId() : null) +
                 '}';
     }
+
 }

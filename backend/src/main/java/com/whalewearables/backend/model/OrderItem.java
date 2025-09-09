@@ -14,7 +14,9 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
-    private Long productId;   // FK → Product
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)   // real FK to product
+    private Product product;   // FK → Product
     private String productName;
     private Integer quantity;
     private BigDecimal price;
@@ -24,15 +26,15 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Long orderItemId, Long productId, String productName, Integer quantity, BigDecimal price, LocalDateTime createdAt, LocalDateTime updatedAt, Order order) {
+    public OrderItem(Long orderItemId, Order order, Product product, String productName, Integer quantity, BigDecimal price, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.orderItemId = orderItemId;
-        this.productId = productId;
+        this.order = order;
+        this.product = product;
         this.productName = productName;
         this.quantity = quantity;
         this.price = price;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.order = order;
     }
 
     public Long getOrderItemId() {
@@ -43,12 +45,12 @@ public class OrderItem {
         this.orderItemId = orderItemId;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Integer getQuantity() {
@@ -103,13 +105,13 @@ public class OrderItem {
     public String toString() {
         return "OrderItem{" +
                 "orderItemId=" + orderItemId +
-                ", productId=" + productId +
+                ", order=" + order +
+                ", product=" + product +
                 ", productName='" + productName + '\'' +
                 ", quantity=" + quantity +
                 ", price=" + price +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", order=" + order +
                 '}';
     }
 }

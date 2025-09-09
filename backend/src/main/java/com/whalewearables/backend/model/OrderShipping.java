@@ -4,44 +4,54 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+
 @Entity
 @Table(name = "order_shipping")
 public class OrderShipping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "shipping_id")
     private Long shippingId;
-    @OneToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+
+    @Column(name = "full_name", nullable = false)
     private String fullName;
+
+    @Column(name = "address_line1", nullable = false)
     private String addressLine1;
+
+    @Column(name = "address_line2")
     private String addressLine2;
+
+    @Column(name = "city", nullable = false)
     private String city;
+
+    @Column(name = "state", nullable = false)
     private String state;
+
+    @Column(name = "postal_code", nullable = false)
     private String postalCode;
+
+    @Column(name = "country", nullable = false)
     private String country;
+
+    @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 
-    public OrderShipping() {
-    }
+    // ✅ Correct mapping - owning side
+    @OneToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
-    public OrderShipping(Long shippingId, String fullName, String addressLine1, String addressLine2, String city, String state, String postalCode, String country, String phoneNumber, LocalDateTime createdAt, LocalDateTime updatedAt, Order order) {
-        this.shippingId = shippingId;
-        this.fullName = fullName;
-        this.addressLine1 = addressLine1;
-        this.addressLine2 = addressLine2;
-        this.city = city;
-        this.state = state;
-        this.postalCode = postalCode;
-        this.country = country;
-        this.phoneNumber = phoneNumber;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.order = order;
-    }
-
+    // --- Getters & Setters ---
     public Long getShippingId() {
         return shippingId;
     }
@@ -49,6 +59,7 @@ public class OrderShipping {
     public void setShippingId(Long shippingId) {
         this.shippingId = shippingId;
     }
+
     public String getFullName() {
         return fullName;
     }
@@ -113,20 +124,20 @@ public class OrderShipping {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public Order getOrder() {
@@ -135,23 +146,5 @@ public class OrderShipping {
 
     public void setOrder(Order order) {
         this.order = order;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderShipping{" +
-                "shippingId=" + shippingId +
-                ", fullName='" + fullName + '\'' +
-                ", addressLine1='" + addressLine1 + '\'' +
-                ", addressLine2='" + addressLine2 + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                ", country='" + country + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", order=" + order +
-                '}';
     }
 }

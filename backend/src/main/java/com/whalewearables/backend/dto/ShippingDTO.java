@@ -10,10 +10,12 @@ public class ShippingDTO {
     private String postalCode;
     private String country;
     private String phoneNumber;
+    private String email;
 
     public ShippingDTO() {
     }
-    public ShippingDTO(String fullName, String addressLine1, String addressLine2, String city, String state, String postalCode, String country, String phoneNumber) {
+
+    public ShippingDTO(String fullName, String addressLine1, String addressLine2, String city, String state, String postalCode, String country, String phoneNumber, String email) {
         this.fullName = fullName;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
@@ -22,6 +24,7 @@ public class ShippingDTO {
         this.postalCode = postalCode;
         this.country = country;
         this.phoneNumber = phoneNumber;
+        this.email = email;
     }
 
     public String getFullName() {
@@ -88,6 +91,13 @@ public class ShippingDTO {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     @Override
     public String toString() {
         return "ShippingDTO{" +
@@ -99,6 +109,7 @@ public class ShippingDTO {
                 ", postalCode='" + postalCode + '\'' +
                 ", country='" + country + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

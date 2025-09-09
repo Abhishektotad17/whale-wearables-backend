@@ -1,26 +1,29 @@
 package com.whalewearables.backend.dto;
 
+import com.whalewearables.backend.model.PaymentMethod;
+import com.whalewearables.backend.model.PaymentStatus;
+
 import java.math.BigDecimal;
 
 public class PaymentDTO {
 
     private String orderId;        // required
-    private Integer userId;        // optional if you derive from session
+    private Long userId;        // optional if you derive from session
     private BigDecimal amount;     // required
     private String currency;       // default "INR"
-    private String status;         // e.g., SUCCESS / FAILED / PENDING
-    private String paymentMethod;  // e.g., CARD, UPI, NETBANKING
+    private PaymentStatus status;         // e.g., SUCCESS / FAILED / PENDING
+    private PaymentMethod paymentMethod;  // e.g., CARD, UPI, NETBANKING
     private String transactionId;
 
     public PaymentDTO() {
     }
 
     public PaymentDTO(String orderId,
-                      Integer userId,
+                      Long userId,
                       BigDecimal amount,
                       String currency,
-                      String status,
-                      String paymentMethod,
+                      PaymentStatus status,
+                      PaymentMethod paymentMethod,
                       String transactionId) {
         this.orderId = orderId;
         this.userId = userId;
@@ -41,11 +44,11 @@ public class PaymentDTO {
         this.orderId = orderId;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -65,19 +68,19 @@ public class PaymentDTO {
         this.currency = currency;
     }
 
-    public String getStatus() {
+    public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 
-    public String getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
