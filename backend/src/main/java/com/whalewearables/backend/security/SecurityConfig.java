@@ -27,26 +27,45 @@ public class SecurityConfig {
                 .cors(cors -> cors
                         .configurationSource(request -> {
                             CorsConfiguration config = new CorsConfiguration();
-                            config.setAllowedOriginPatterns(List.of("http://localhost:5173"));
+                            config.setAllowedOriginPatterns(List.of("http://localhost:5173", "https://yourdomain.com"));
                             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                             config.setAllowedHeaders(List.of("*"));
                             config.setAllowCredentials(true); // Cookies allowed
+                            config.setExposedHeaders(List.of("Authorization", "Content-Type"));
+                            config.setMaxAge(3600L); // Cache preflight response for 1 hour
                             return config;
                         })
                 )
                 .csrf(csrf -> csrf.disable()) // Disable CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/home",
-                                "/api/orders",
-                                "/api/orders/*/token",
-                                "/api/orders/*/status",
-                                "/api/orders/*",
-                                "/api/products",
-                                "/api/products/*",
-                                "/api/cart",
-                                "/api/products/add-with-image",
-                                "/api/contact").permitAll() // Public endpoints
-                        .anyRequest().authenticated()
+                                // Public endpoints (no auth required)
+                                .requestMatchers(
+                                        "/api/auth/**",        // login, signup, google
+                                        "/api/home",
+                                        "/api/products/**",    // product listing, details
+                                        "/api/contact"         // contact form
+                                ).permitAll()
+
+                                // Protected endpoints (auth required)
+                                .requestMatchers(
+                                        "/api/cart/**",        // cart operations
+                                        "/api/orders/**",      // order creation, payment status
+                                        "/api/users/**"        // user profile, addresses etc.
+                                ).authenticated()
+
+                                // Any other endpoints → require authentication
+                                .anyRequest().authenticated()
+//                        .requestMatchers("/api/auth/**", "/api/home",
+//                                "/api/orders",
+//                                "/api/orders/*/token",
+//                                "/api/orders/*/status",
+//                                "/api/orders/*",
+//                                "/api/products",
+//                                "/api/products/*",
+//                                "/api/cart",
+//                                "/api/products/add-with-image",
+//                                "/api/contact").permitAll()
+//                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
