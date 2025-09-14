@@ -30,6 +30,8 @@ public class CashFreeServiceImpl implements CashFreeService {
 
     @Value("${cashfree.client-secret}")
     private String clientSecret;
+    @Value("${cashfree.return-url}")
+    private String returnUrl;
 
     @Autowired
     private OrderRepository orderRepository;
@@ -64,7 +66,7 @@ public class CashFreeServiceImpl implements CashFreeService {
 
         // ✅ Add order_meta with return_url
         OrderMeta orderMeta = new OrderMeta();
-        orderMeta.setReturnUrl("http://localhost:5173/payment-success?order_id={order_id}");
+        orderMeta.setReturnUrl(returnUrl);
         request.setOrderMeta(orderMeta);
 
         try {
