@@ -1,6 +1,6 @@
-# Whale Wearables
+# NextGear Wearables
 
-This backend service is built using Java Spring Boot, designed to provide robust APIs and business logic for the Whale Wearables application.
+This backend service is built using Java Spring Boot, designed to provide robust APIs and business logic for the NextGear Wearables application.
 It powers all core services including authentication, product management, cart & checkout logic, and payment integration.
 
 ## Tech Stack & Tools
