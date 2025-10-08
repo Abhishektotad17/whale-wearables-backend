@@ -46,6 +46,8 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     @Value("${google.client.secret}")
     private String GOOGLE_CLIENT_SECRET;
+    @Value("${google.redirect.uri}")
+    private String GOOGLE_REDIRECT_URI;
 
     private final String GOOGLE_CLIENT_ID = "829277785533-b6moncq6ikqke5okefkve9uj0734n51g.apps.googleusercontent.com";
 
@@ -150,7 +152,7 @@ public class AuthController {
                     "code=" + URLEncoder.encode(code, StandardCharsets.UTF_8) +
                             "&client_id=" + GOOGLE_CLIENT_ID +
                             "&client_secret=" + GOOGLE_CLIENT_SECRET +
-                            "&redirect_uri=" + URLEncoder.encode("http://localhost:5173", StandardCharsets.UTF_8) + // must match Google Console
+                            "&redirect_uri=" + URLEncoder.encode(GOOGLE_REDIRECT_URI, StandardCharsets.UTF_8) + // must match Google Console
                             "&grant_type=authorization_code";
 
             HttpRequest tokenRequest = HttpRequest.newBuilder()
