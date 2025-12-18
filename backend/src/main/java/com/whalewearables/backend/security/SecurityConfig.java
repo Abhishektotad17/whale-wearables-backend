@@ -43,14 +43,15 @@ public class SecurityConfig {
                                         "/api/auth/**",        // login, signup, google
                                         "/api/home",
                                         "/api/products/**",    // product listing, details
-                                        "/api/contact"         // contact form
+                                        "/api/contact",         // contact form
+                                        "/api/chat/**"
                                 ).permitAll()
 
                                 // Protected endpoints (auth required)
                                 .requestMatchers(
                                         "/api/cart/**",        // cart operations
                                         "/api/orders/**",      // order creation, payment status
-                                        "/api/users/**"        // user profile, addresses etc.
+                                        "/api/users/**"       // user profile, addresses etc
                                 ).authenticated()
 
                                 // Any other endpoints → require authentication

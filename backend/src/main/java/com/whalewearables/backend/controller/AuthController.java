@@ -98,7 +98,6 @@ public class AuthController {
         cookie.setPath("/");
         cookie.setMaxAge(24 * 60 * 60);
         cookie.setSecure(false); // ❗Set to true only if using HTTPS
-        cookie.setDomain("ec2-13-235-45-1.ap-south-1.compute.amazonaws.com");
         resp.addCookie(cookie);
         return ResponseEntity.ok(Map.of("user", user));
     }
