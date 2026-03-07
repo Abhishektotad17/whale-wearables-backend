@@ -121,4 +121,23 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
+    @Override
+    public String getProductCatalogSummary() {
+        List<Product> products = productRepository.findAll()
+                .stream()
+                .limit(50)
+                .collect(Collectors.toList());
+
+        if (products.isEmpty()) {
+            return "No products currently available.";
+        }
+
+        return products.stream()
+                .map(p -> String.format("- %s | ₹%.2f | %s",
+                        p.getName(),
+                        p.getPrice(),
+                        p.getDescription()))
+                .collect(Collectors.joining("\n"));
+    }
 }

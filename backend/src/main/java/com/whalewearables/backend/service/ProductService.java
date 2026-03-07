@@ -11,4 +11,5 @@ public interface ProductService {
     public ProductDto getProductById(Long id);
     public ProductDto updateProduct(Long id, ProductDto productDto);
     public void deleteProduct(Long id);
+    String getProductCatalogSummary();
 }

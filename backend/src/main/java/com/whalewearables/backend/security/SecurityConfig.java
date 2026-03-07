@@ -44,7 +44,8 @@ public class SecurityConfig {
                                         "/api/home",
                                         "/api/products/**",    // product listing, details
                                         "/api/contact",         // contact form
-                                        "/api/chat/**"
+                                        "/api/gemini/**",
+                                        "/images/**"
                                 ).permitAll()
 
                                 // Protected endpoints (auth required)
