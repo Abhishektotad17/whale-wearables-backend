@@ -65,7 +65,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Email already exists");
         }
         User u = userServiceImpl.registerLocalUser(req.getName(), req.getEmail(), req.getPassword());
-        return ResponseEntity.ok(Map.of("user", u));
+        return ResponseEntity.ok(Map.of("user",  UserDto.fromEntity(u)));
     }
 
     @PostMapping("/login")
@@ -92,14 +92,11 @@ public class AuthController {
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
-        String token = jwtUtil.generateToken(user.getEmail());
-        Cookie cookie = new Cookie("jwt", token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
-        cookie.setSecure(false); // ❗Set to true only if using HTTPS
-        resp.addCookie(cookie);
-        return ResponseEntity.ok(Map.of("user", user));
+
+        String token = jwtUtil.generateAccessToken(user.getEmail(), user.getRoles());
+        setJwtCookie(resp, token);
+
+        return ResponseEntity.ok(Map.of("user", UserDto.fromEntity(user)));
     }
 
 //    @PostMapping("/google")
@@ -199,13 +196,9 @@ public class AuthController {
                 userServiceImpl.save(u);
             }
 
-            // Step 4 — Create JWT and set cookie
-            String jwtToken = jwtUtil.generateToken(u.getEmail());
-            Cookie cookie = new Cookie("jwt", jwtToken);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(24 * 60 * 60);
-            resp.addCookie(cookie);
+            // Step 4 — ✅ Pass roles into token generation
+            String jwtToken = jwtUtil.generateAccessToken(u.getEmail(), u.getRoles());
+            setJwtCookie(resp, jwtToken);
 
             return ResponseEntity.ok(Map.of("user", UserDto.fromEntity(u)));
 
@@ -246,5 +239,14 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         }
         return ResponseEntity.ok(Map.of("user", UserDto.fromEntity(u)));
+    }
+
+    private void setJwtCookie(HttpServletResponse resp, String token) {
+        Cookie cookie = new Cookie("jwt", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(24 * 60 * 60);
+        cookie.setSecure(false); // set true in production (HTTPS)
+        resp.addCookie(cookie);
     }
 }

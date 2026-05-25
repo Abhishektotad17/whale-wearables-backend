@@ -1,5 +1,9 @@
 package com.whalewearables.backend.dto;
 
+import com.whalewearables.backend.model.Role;
+
+import java.util.Set;
+
 public class UserDto {
 
     private Long id;
@@ -7,16 +11,18 @@ public class UserDto {
     private String email;
     private String provider;
     private String picture;
+    private Set<Role> roles;
 
     public UserDto() {
     }
 
-    public UserDto(Long id, String name, String email, String provider, String picture) {
+    public UserDto(Long id, String name, String email, String provider, String picture, Set<Role> roles) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.provider = provider;
         this.picture = picture;
+        this.roles = roles;
     }
 
     // Factory method
@@ -26,7 +32,8 @@ public class UserDto {
                 user.getName(),
                 user.getEmail(),
                 user.getProvider(),
-                user.getPicture()
+                user.getPicture(),
+                user.getRoles()
         );
     }
     public Long getId() {
@@ -68,6 +75,7 @@ public class UserDto {
     public void setPicture(String picture) {
         this.picture = picture;
     }
+    public Set<Role> getRoles() { return roles; }
 
     @Override
     public String toString() {
@@ -77,7 +85,7 @@ public class UserDto {
                 ", email='" + email + '\'' +
                 ", provider='" + provider + '\'' +
                 ", picture='" + picture + '\'' +
+                ", roles=" + roles +
                 '}';
     }
-
 }

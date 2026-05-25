@@ -1,8 +1,10 @@
 package com.whalewearables.backend.service.impl;
 
+import com.whalewearables.backend.model.Role;
 import com.whalewearables.backend.model.User;
 import com.whalewearables.backend.repository.UserRepository;
 import com.whalewearables.backend.service.UserService;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 
@@ -48,6 +52,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         u.setEmail(email);
         u.setPassword(hashed);
         u.setProvider("local");
+        u.addRole(Role.USER);
 
         return repo.save(u);
     }
@@ -59,6 +64,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         u.setPassword(null);         // Explicitly setting null
         u.setProvider("google");
         u.setPicture(pictureUrl);
+        u.addRole(Role.USER);
         return repo.save(u);
     }
 
@@ -67,10 +73,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = repo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
+        Set<SimpleGrantedAuthority> authorities = user.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                .collect(Collectors.toSet());
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword() != null ? user.getPassword() : "")
-                .roles("USER")
+                .authorities(authorities)
                 .build();
     }
 

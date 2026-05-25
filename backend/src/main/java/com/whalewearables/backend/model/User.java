@@ -2,6 +2,9 @@ package com.whalewearables.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -21,15 +24,22 @@ public class User {
     @Column
     private String picture;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
+
     public User() {
     }
-    public User(Long id, String email, String name, String password, String provider, String picture) {
+    public User(Long id, String email, String name, String password, String provider, String picture,Set<Role> roles) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.password = password;
         this.provider = provider;
         this.picture = picture;
+        this.roles = roles != null ? roles : new HashSet<>();
     }
     public Long getId() {
         return id;
@@ -79,14 +89,21 @@ public class User {
         this.picture = picture;
     }
 
+    public Set<Role> getRoles() { return roles; }
+    public void setRoles(Set<Role> roles) { this.roles = roles; }
+
+    public void addRole(Role role) { this.roles.add(role); }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
                 ", provider='" + provider + '\'' +
+                ", picture='" + picture + '\'' +
+                ", roles=" + roles +
                 '}';
     }
-
 }
